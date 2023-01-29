@@ -1,58 +1,62 @@
 
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Path
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from sqlalchemy.orm import Session
 
-from config.database import get_db
 from modules.company import company_schemas as company_schemas
-from modules.company.company_model import Company  as Company_model
+from modules.company.company_controller import Company_Controller
+
 
 companyRouter = APIRouter()
 
 
 @companyRouter.get( '/', tags= [ 'company' ],
                     response_model= company_schemas.List_companies_response )
-def get_companies( db: Session = Depends(get_db), limit: int = 10, page: int = 1, search: str = '' ) :
-    
-    skip = (page - 1) * limit
-    companies = db.query( Company_model ).group_by( Company_model.id ).filter(
-        Company_model.name.contains( search )).limit( limit ).offset( skip ).all()
-    return JSONResponse( status_code= 200, content= {'status': 'success', 'results': len( companies ), 'companies': jsonable_encoder( companies )} )
+def get_companies( limit: int = 10, page: int = 1, search: str = '' ) :    
+    companies = Company_Controller().get_companies( limit, page, search )
+    return JSONResponse(    status_code= 200, 
+                            content= { 
+                                'results': len( companies ), 
+                                'companies': jsonable_encoder( companies) } )
 
 
 
-@companyRouter.get( '/company/{id}', tags= [ 'company' ],
+@companyRouter.get( '/{id}', tags= [ 'company' ],
                     response_model= company_schemas.Company_Base_Schema )
-def get_company() :
-
-    return JSONResponse( status_code= 200)
+def get_company( id: int = Path( ge=1 ) ) :
+    company = Company_Controller().get_company( id )
+    print( company)
+    if not company:
+        return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
+    return JSONResponse(  status_code= 200,
+                           content= jsonable_encoder( company ) )
 
 
 
 @companyRouter.post( '/', tags= [ 'company' ],
                     response_model= company_schemas.Companies_response )
-def create_company( company: company_schemas.Create_Company_Schema, db: Session = Depends( get_db )) :
-    new_company = Company_model( **company.dict() )
-    db.add( new_company  )
-    db.commit()
-    db.refresh( new_company )
-    print( 'ddde')
+def create_company( company: company_schemas.Create_Company_Schema ) :
+    new_company = Company_Controller().create_company( company )
     return JSONResponse( status_code= 201, content= jsonable_encoder( new_company ))
 
 
 
-@companyRouter.put( '/company', tags= [ 'company' ],
+@companyRouter.put( '/', tags= [ 'company' ],
                     response_model= dict)
-def update_company() :
+def update_company(id: int, company: dict ) :
+    company_DB = Company_Controller().update_company( id, company )
+    if not company_DB:
+        return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
+    return JSONResponse( status_code= 200, content={ 'message' : 'Actualizado exitosamente' })
 
-    return JSONResponse( status_code= 200)
 
 
-
-@companyRouter.delete( '/company', tags= [ 'company' ],
+@companyRouter.delete( '/{id}', tags= [ 'company' ],
                     response_model= dict )
-def delete_companies() :
-
-    return JSONResponse( status_code= 200)
+def delete_companies( id: int = Path( ge=1 ) ) :
+    company = Company_Controller().get_company( id )
+    if not company:
+        return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
+    Company_Controller().delete_company( company )
+    return JSONResponse( status_code= 200, content={ 'message' : 'Borrado exitosamente' })

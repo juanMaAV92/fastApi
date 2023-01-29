@@ -14,35 +14,47 @@ class Company_Base_Schema( BaseModel ):
     number: str
     email: str
     class Config:
-        orm_mode = True
-        schema_extra = {
-            'exampe':{
-                'id': 1234,
-                'name': 'minim sit',
-                'description': 'lorem laborum cupidatat consequat cillum ',
-                'identification_type': 'nit',
-                'identification': '123123213-1',
-                'address': 'consectetur eu voluptate amet',
-                'number': '1382132323',
-                'email': 'juan@hotm.com'
-            }
-        }
-     
-    
+        orm_mode = True     
+        
     
 class Create_Company_Schema( Company_Base_Schema ):
    pass
 
-    
+
+class Update_Company_Schema( BaseModel ):
+   description: Optional[ str ] = Field( max_length=50 )
+   address: Optional[ str ]
+   number: Optional[ str ]
+   email: Optional[ str ]
+   class Config:
+        orm_mode = True  
 
 
-class Companies_response( Company_Base_Schema ):
-    id: Optional[ int ] = None
-    name: str 
+class Get_Company_response( Company_Base_Schema ):
+    id: int = None    
     created_at: datetime
     updated_at: datetime
 
-class List_companies_response( BaseModel ):
-    status: str
+class Get_Companies_response( BaseModel ):
     result: int
-    companies: List[ Companies_response ]
+    companies: List[ Get_Company_response ]
+
+
+class Create_Companies_response( BaseModel ):
+    id: int = None
+    created_at: datetime
+    def formatter( company ):
+        return{
+            'id': company[ 'id' ],
+            'created_at': company[ 'created_at' ]
+        }
+
+
+class Update_Company_response( BaseModel ):
+    id: int = None
+    updated_at: datetime
+    def formatter( company ):
+        return{
+            'id': company[ 'id' ],
+            'updated_at': company[ 'updated_at' ]
+        }

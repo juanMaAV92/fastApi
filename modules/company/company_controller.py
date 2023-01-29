@@ -37,7 +37,7 @@ class Company_Controller():
         company_DB = self.get_company( id )
         if not company_DB:
             return []
-        company_DB.update( **company )
+        company_DB.update( **company.__dict__ )
         self.db.commit()
         self.db.refresh( company_DB )
         return True

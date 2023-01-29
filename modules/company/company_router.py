@@ -4,7 +4,7 @@ from fastapi import APIRouter, Path
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from modules.company import company_schemas as company_schemas
+from modules.company.company_schemas import *
 from modules.company.company_controller import Company_Controller
 
 
@@ -12,8 +12,8 @@ companyRouter = APIRouter()
 
 
 @companyRouter.get( '/', tags= [ 'company' ],
-                    response_model= company_schemas.List_companies_response )
-def get_companies( limit: int = 10, page: int = 1, search: str = '' ) :    
+                    response_model= Get_Companies_response )
+def get_companies( limit: int = 10, page: int = 1, search: str = '' ) -> Get_Companies_response :    
     companies = Company_Controller().get_companies( limit, page, search )
     return JSONResponse(    status_code= 200, 
                             content= { 
@@ -23,10 +23,9 @@ def get_companies( limit: int = 10, page: int = 1, search: str = '' ) :
 
 
 @companyRouter.get( '/{id}', tags= [ 'company' ],
-                    response_model= company_schemas.Company_Base_Schema )
-def get_company( id: int = Path( ge=1 ) ) :
+                    response_model= Get_Company_response )
+def get_company( id: int = Path( ge=1 ) ) -> Get_Company_response :
     company = Company_Controller().get_company( id )
-    print( company)
     if not company:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
     return JSONResponse(  status_code= 200,
@@ -35,16 +34,17 @@ def get_company( id: int = Path( ge=1 ) ) :
 
 
 @companyRouter.post( '/', tags= [ 'company' ],
-                    response_model= company_schemas.Companies_response )
-def create_company( company: company_schemas.Create_Company_Schema ) :
+                    response_model= Create_Companies_response )
+def create_company( company: Create_Company_Schema ) -> Create_Companies_response:
     new_company = Company_Controller().create_company( company )
-    return JSONResponse( status_code= 201, content= jsonable_encoder( new_company ))
+    return JSONResponse(    status_code= 201, 
+                            content= jsonable_encoder( Create_Companies_response.formatter(new_company.__dict__) ))
 
 
 
 @companyRouter.put( '/', tags= [ 'company' ],
-                    response_model= dict)
-def update_company(id: int, company: dict ) :
+                    response_model= Update_Company_response )
+def update_company(id: int, company: Update_Company_Schema ) -> Update_Company_response:
     company_DB = Company_Controller().update_company( id, company )
     if not company_DB:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })

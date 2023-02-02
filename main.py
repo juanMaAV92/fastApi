@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
 from middlewares.error_handler import ErrorHandler
-from modules import company
+from modules import organizations
 from config.database import engine, Base
 
 Base.metadata.create_all( bind= engine )
@@ -34,7 +34,7 @@ def health():
     return  JSONResponse( status_code= 200, content=[] )
 
 
-app.include_router( company.companyRouter, prefix='/api/v1/organizations' )
+app.include_router( organizations.organizationRouter, prefix='/api/v1/organizations' )
 
 
 def run():

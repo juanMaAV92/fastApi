@@ -4,7 +4,7 @@ from typing import Optional, List
 from datetime import datetime
 
 
-class Company_Base_Schema( BaseModel ):
+class Organization_Base_Schema( BaseModel ):
     # id: Optional[ int ] = None
     name: str = Field( min_length=3, max_length=20 )
     type: str 
@@ -18,11 +18,11 @@ class Company_Base_Schema( BaseModel ):
         orm_mode = True     
         
     
-class Create_Company_Schema( Company_Base_Schema ):
+class Create_organization_Schema( Organization_Base_Schema ):
    pass
 
 
-class Update_Company_Schema( BaseModel ):
+class Update_organization_Schema( BaseModel ):
    description: Optional[ str ] = Field( max_length=50 )
    address: Optional[ str ]
    phone: Optional[ str ]
@@ -31,14 +31,14 @@ class Update_Company_Schema( BaseModel ):
         orm_mode = True  
 
 
-class Get_Company_response( Company_Base_Schema ):
+class Get_organization_response( Organization_Base_Schema ):
     id: int = None    
     created_at: datetime
     updated_at: datetime
 
 class Get_organizations_response( BaseModel ):
     result: int
-    organizations: List[ Get_Company_response ]
+    organizations: List[ Get_organization_response ]
 
 
 class Create_organizations_response( BaseModel ):
@@ -51,7 +51,7 @@ class Create_organizations_response( BaseModel ):
         }
 
 
-class Update_Company_response( BaseModel ):
+class Update_organization_response( BaseModel ):
     id: int = None
     updated_at: datetime
     def formatter( company ):

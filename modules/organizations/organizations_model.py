@@ -1,11 +1,11 @@
 
 
 
-from sqlalchemy import TIMESTAMP, Column, Identity, Integer, String, text
+from sqlalchemy import TIMESTAMP, Column, Integer, String, text
 
 from config.database import Base
 
-class Company( Base ):
+class Organization( Base ):
     __tablename__ = 'organizations'
     id = Column( Integer, primary_key= True, autoincrement= True )
     name = Column( String, nullable= False)

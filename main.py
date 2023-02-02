@@ -34,7 +34,7 @@ def health():
     return  JSONResponse( status_code= 200, content=[] )
 
 
-app.include_router( company.companyRouter, prefix='/api/v1/companies' )
+app.include_router( company.companyRouter, prefix='/api/v1/organizations' )
 
 
 def run():

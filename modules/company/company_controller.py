@@ -13,11 +13,11 @@ class Company_Controller():
         self.db.close()
 
 
-    def get_companies( self, limit: int, page: int, search: str ) :
+    def get_organizations( self, limit: int, page: int, search: str ) :
         skip = (page - 1) * limit
-        companies = self.db.query( Company_model ).group_by( Company_model.id ).filter(
+        organizations = self.db.query( Company_model ).group_by( Company_model.id ).filter(
         Company_model.name.contains( search )).limit( limit ).offset( skip ).all()
-        return companies
+        return organizations
 
 
     def get_company( self, id ):

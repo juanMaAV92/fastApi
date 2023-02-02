@@ -7,11 +7,12 @@ from datetime import datetime
 class Company_Base_Schema( BaseModel ):
     # id: Optional[ int ] = None
     name: str = Field( min_length=3, max_length=20 )
+    type: str 
     identification_type: str 
     identification: str
     description: Optional[ str ] = Field( max_length=50 )
     address: str
-    number: str
+    phone: str
     email: str
     class Config:
         orm_mode = True     
@@ -24,7 +25,7 @@ class Create_Company_Schema( Company_Base_Schema ):
 class Update_Company_Schema( BaseModel ):
    description: Optional[ str ] = Field( max_length=50 )
    address: Optional[ str ]
-   number: Optional[ str ]
+   phone: Optional[ str ]
    email: Optional[ str ]
    class Config:
         orm_mode = True  
@@ -35,12 +36,12 @@ class Get_Company_response( Company_Base_Schema ):
     created_at: datetime
     updated_at: datetime
 
-class Get_Companies_response( BaseModel ):
+class Get_organizations_response( BaseModel ):
     result: int
-    companies: List[ Get_Company_response ]
+    organizations: List[ Get_Company_response ]
 
 
-class Create_Companies_response( BaseModel ):
+class Create_organizations_response( BaseModel ):
     id: int = None
     created_at: datetime
     def formatter( company ):

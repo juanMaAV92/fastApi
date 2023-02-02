@@ -6,14 +6,15 @@ from sqlalchemy import TIMESTAMP, Column, Identity, Integer, String, text
 from config.database import Base
 
 class Company( Base ):
-    __tablename__ = 'companies'
+    __tablename__ = 'organizations'
     id = Column( Integer, primary_key= True, autoincrement= True )
     name = Column( String, nullable= False)
     description = Column( String, nullable= False)
+    type = Column( String, nullable= False)
     identification_type = Column( String, nullable= False)
     identification = Column( String, nullable= False)
     address = Column( String, nullable= False)
-    number = Column( String, nullable= False)
+    phone = Column( String, nullable= False)
     email = Column( String, unique= True,  nullable= False)
 
     created_at = Column(TIMESTAMP(timezone=True),

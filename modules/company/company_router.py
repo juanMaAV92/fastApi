@@ -12,13 +12,13 @@ companyRouter = APIRouter()
 
 
 @companyRouter.get( '/', tags= [ 'company' ],
-                    response_model= Get_Companies_response )
-def get_companies( limit: int = 10, page: int = 1, search: str = '' ) -> Get_Companies_response :    
-    companies = Company_Controller().get_companies( limit, page, search )
+                    response_model= Get_organizations_response )
+def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) -> Get_organizations_response :    
+    organizations = Company_Controller().get_organizations( limit, page, search )
     return JSONResponse(    status_code= 200, 
                             content= { 
-                                'results': len( companies ), 
-                                'companies': jsonable_encoder( companies) } )
+                                'results': len( organizations ), 
+                                'organizations': jsonable_encoder( organizations) } )
 
 
 
@@ -34,11 +34,11 @@ def get_company( id: int = Path( ge=1 ) ) -> Get_Company_response :
 
 
 @companyRouter.post( '/', tags= [ 'company' ],
-                    response_model= Create_Companies_response )
-def create_company( company: Create_Company_Schema ) -> Create_Companies_response:
+                    response_model= Create_organizations_response )
+def create_company( company: Create_Company_Schema ) -> Create_organizations_response:
     new_company = Company_Controller().create_company( company )
     return JSONResponse(    status_code= 201, 
-                            content= jsonable_encoder( Create_Companies_response.formatter(new_company.__dict__) ))
+                            content= jsonable_encoder( Create_organizations_response.formatter(new_company.__dict__) ))
 
 
 
@@ -54,7 +54,7 @@ def update_company(id: int, company: Update_Company_Schema ) -> Update_Company_r
 
 @companyRouter.delete( '/{id}', tags= [ 'company' ],
                     response_model= dict )
-def delete_companies( id: int = Path( ge=1 ) ) :
+def delete_organizations( id: int = Path( ge=1 ) ) :
     company = Company_Controller().get_company( id )
     if not company:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })

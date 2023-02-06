@@ -26,6 +26,9 @@ class organization_Controller():
 
     
     def create_organization( self, organization ):
+        organization_DB = self.db.query( Organization_model ).filter( Organization_model.email == organization.email ).first()
+        if organization_DB:
+            return []
         new_organization = Organization_model( **organization.dict() )
         self.db.add( new_organization  )
         self.db.commit()
@@ -37,7 +40,7 @@ class organization_Controller():
         organization_DB = self.get_organization( id )
         if not organization_DB:
             return []
-        organization_DB.update( **organization.__dict__ )
+        organization_DB.update( **organization.dict(exclude_none=True) )
         self.db.commit()
         self.db.refresh( organization_DB )
         return True

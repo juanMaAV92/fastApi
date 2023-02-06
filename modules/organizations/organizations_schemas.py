@@ -17,28 +17,19 @@ class Organization_Base_Schema( BaseModel ):
     class Config:
         orm_mode = True     
         
-    
-class Create_organization_Schema( Organization_Base_Schema ):
-   pass
-
-
-class Update_organization_Schema( BaseModel ):
-   description: Optional[ str ] = Field( max_length=50 )
-   address: Optional[ str ]
-   phone: Optional[ str ]
-   email: Optional[ str ]
-   class Config:
-        orm_mode = True  
-
 
 class Get_organization_response( Organization_Base_Schema ):
     id: int = None    
     created_at: datetime
     updated_at: datetime
 
-class Get_organizations_response( BaseModel ):
-    result: int
-    organizations: List[ Get_organization_response ]
+
+class Get_organizations_response( List[ Get_organization_response ] ):
+    pass
+
+
+class Create_organization_Schema( Organization_Base_Schema ):
+   pass
 
 
 class Create_organizations_response( BaseModel ):
@@ -49,6 +40,21 @@ class Create_organizations_response( BaseModel ):
             'id': company[ 'id' ],
             'created_at': company[ 'created_at' ]
         }
+
+class Update_organization_Schema( BaseModel ):
+   description: Optional[ str ] = Field( max_length=50 )
+   address: Optional[ str ]
+   phone: Optional[ str ]
+   email: Optional[ str ]
+   class Config:
+        orm_mode = True  
+
+
+
+
+
+
+
 
 
 class Update_organization_response( BaseModel ):

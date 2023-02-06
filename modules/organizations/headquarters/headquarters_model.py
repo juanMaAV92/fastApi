@@ -1,21 +1,22 @@
 
 
 
-from sqlalchemy import TIMESTAMP, Column, Integer, String, text
+from sqlalchemy import TIMESTAMP, Column, ForeignKey, Integer, String, text
+from sqlalchemy.orm import relationship
 
 from config.database import Base
+from modules.organizations.organizations_model import Organization
 
-class Organization( Base ):
-    __tablename__ = 'organizations'
+class Headquarter( Base ):
+    __tablename__ = 'headquarters'
     id = Column( Integer, primary_key= True, autoincrement= True )
     name = Column( String, unique= True, nullable= False)
-    description = Column( String, nullable= False)
-    type = Column( String, nullable= False)
-    identification_type = Column( String, nullable= False)
-    identification = Column( String, nullable= False)
     address = Column( String, nullable= False)
     phone = Column( String, unique= True, nullable= False)
     email = Column( String, unique= True,  nullable= False)
+    
+    organization_id = Column( Integer, ForeignKey('organizations.id')) 
+    organization = relationship( Organization )
 
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text("now()"))

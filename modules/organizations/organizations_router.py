@@ -11,14 +11,13 @@ from modules.organizations.organizations_controller import organization_Controll
 organizationRouter = APIRouter()
 
 
-@organizationRouter.get( '/', tags= [ 'organization' ],
+
+@organizationRouter.get( '', tags= [ 'organization' ],
                     response_model= Get_organizations_response )
 def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) -> Get_organizations_response :    
     organizations = organization_Controller().get_organizations( limit, page, search )
     return JSONResponse(    status_code= 200, 
-                            content= { 
-                                'results': len( organizations ), 
-                                'organizations': jsonable_encoder( organizations) } )
+                            content= jsonable_encoder( organizations) )
 
 
 
@@ -33,16 +32,20 @@ def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_response :
 
 
 
-@organizationRouter.post( '/', tags= [ 'organization' ],
+@organizationRouter.post( '', tags= [ 'organization' ],
                     response_model= Create_organizations_response )
 def create_organization( organization: Create_organization_Schema ) -> Create_organizations_response:
     new_organization = organization_Controller().create_organization( organization )
-    return JSONResponse(    status_code= 201, 
+    if not new_organization:
+        return JSONResponse(    status_code= 400, 
+                                content= { 'message' : 'the email must be unique' }
+        )
+    return JSONResponse(    status_code= 200, 
                             content= jsonable_encoder( Create_organizations_response.formatter(new_organization.__dict__) ))
 
 
 
-@organizationRouter.put( '/', tags= [ 'organization' ],
+@organizationRouter.patch( '/{id}', tags= [ 'organization' ],
                     response_model= Update_organization_response )
 def update_organization(id: int, organization: Update_organization_Schema ) -> Update_organization_response:
     organization_DB = organization_Controller().update_organization( id, organization )

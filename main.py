@@ -1,47 +1,46 @@
-
-
+ 
 __author__ = 'juanMaAV92'
 
-import os
 import uvicorn
 
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 
 from middlewares.error_handler import ErrorHandler
+from middlewares.error_validation import validation_exception_handler
 from modules import organizations
+from modules.organizations import headquarters
 from config.database import engine, Base
+from config.config import settings
 
 Base.metadata.create_all( bind= engine )
 
 app= FastAPI(
     title= 'Api',
     description= 'HomeWork 1',
-    version= '0.0.1'
+    version= '0.1.0'
 )
 
+
 app.add_middleware( ErrorHandler )
-
-load_dotenv()
-API_PORT = int( os.getenv( 'API_PORT' ) )
-API_HOST = os.getenv( 'API_HOST' )
-API_RELOAD = bool( os.getenv( 'API_PORT' ) )
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 
-@app.get( '/health', tags=[ 'health' ] )
+@app.get( f'{settings.URL_PREFIX}health', tags=[ 'health' ] )
 def health():
     return  JSONResponse( status_code= 200, content=[] )
 
 
-app.include_router( organizations.organizationRouter, prefix='/api/v1/organizations' )
+app.include_router( headquarters.headquartersRouter, prefix= f'{settings.URL_PREFIX}organizations/headquarters' )
+app.include_router( organizations.organizationRouter, prefix= f'{settings.URL_PREFIX}organizations' )
 
 
 def run():
     uvicorn.run(    'main:app',
-                    host = API_HOST,
-                    port = API_PORT,
-                    reload = API_RELOAD,
+                    host = settings.API_HOST,
+                    port = settings.API_PORT,
+                    reload = settings.API_RELOAD,
                     log_level = 'debug')
 
 

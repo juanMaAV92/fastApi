@@ -1,7 +1,7 @@
 
 
 from config.database import SessionLocal
-from modules.organizations.headquarters.headquarters_model import Headquarter as Headquarters_model
+from modules.headquarters.headquarters_model import Headquarter as Headquarters_model
 
 class headquarter_Controller():
 

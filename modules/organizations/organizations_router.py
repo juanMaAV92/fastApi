@@ -14,7 +14,7 @@ organizationRouter = APIRouter()
 
 @organizationRouter.get( '', tags= [ 'organization' ],
                     response_model= Get_organizations_response )
-def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) -> Get_organizations_response :    
+async def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) -> Get_organizations_response :    
     organizations = organization_Controller().get_organizations( limit, page, search )
     return JSONResponse(    status_code= 200, 
                             content= jsonable_encoder( organizations) )
@@ -23,7 +23,7 @@ def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) -> Get
 
 @organizationRouter.get( '/{id}', tags= [ 'organization' ],
                     response_model= Get_organization_response )
-def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_response :
+async def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_response :
     organization = organization_Controller().get_organization( id )
     if not organization:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
@@ -34,7 +34,7 @@ def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_response :
 
 @organizationRouter.post( '', tags= [ 'organization' ],
                     response_model= Create_organizations_response )
-def create_organization( organization: Create_organization_Schema ) -> Create_organizations_response:
+async def create_organization( organization: Create_organization_Schema ) -> Create_organizations_response:
     new_organization = organization_Controller().create_organization( organization )
     if not new_organization:
         return JSONResponse(    status_code= 400, 
@@ -47,7 +47,7 @@ def create_organization( organization: Create_organization_Schema ) -> Create_or
 
 @organizationRouter.patch( '/{id}', tags= [ 'organization' ],
                     response_model= Update_organization_response )
-def update_organization(id: int, organization: Update_organization_Schema ) -> Update_organization_response:
+async def update_organization(id: int, organization: Update_organization_Schema ) -> Update_organization_response:
     organization_DB = organization_Controller().update_organization( id, organization )
     if not organization_DB:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
@@ -57,7 +57,7 @@ def update_organization(id: int, organization: Update_organization_Schema ) -> U
 
 @organizationRouter.delete( '/{id}', tags= [ 'organization' ],
                     response_model= dict )
-def delete_organizations( id: int = Path( ge=1 ) ) :
+async def delete_organizations( id: int = Path( ge=1 ) ) :
     organization = organization_Controller().get_organization( id )
     if not organization:
         return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })

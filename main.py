@@ -10,16 +10,18 @@ from fastapi.exceptions import RequestValidationError
 from middlewares.error_handler import ErrorHandler
 from middlewares.error_validation import validation_exception_handler
 from modules import organizations
-from modules.organizations import headquarters
+from modules import headquarters
 from config.database import engine, Base
 from config.config import settings
 
 Base.metadata.create_all( bind= engine )
 
 app= FastAPI(
-    title= 'Api',
-    description= 'HomeWork 1',
-    version= '0.1.0'
+    title= settings.API_TITLE,
+    description= settings.API_DESC,
+    version= settings.API_VERSION,
+    docs_url= settings.DOCS_URL,
+    redoc_url= settings.REDOC_URL
 )
 
 
@@ -28,7 +30,7 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 
 @app.get( f'{settings.URL_PREFIX}health', tags=[ 'health' ] )
-def health():
+async def health():
     return  JSONResponse( status_code= 200, content=[] )
 
 

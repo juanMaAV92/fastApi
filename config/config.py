@@ -4,6 +4,12 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     
+    DOCS_URL: str
+    REDOC_URL: str
+    API_TITLE: str
+    API_DESC: str
+    API_VERSION: str
+
     API_PORT: int
     API_HOST: str
     API_RELOAD: bool

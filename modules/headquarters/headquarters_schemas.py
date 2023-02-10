@@ -10,7 +10,7 @@ class Headquarter_Base_Schema( BaseModel ):
     address: str
     phone: str
     email: str
-    organization_id: int    
+    organization_id: Optional[ int ] = None    
     class Config:
         orm_mode = True     
 

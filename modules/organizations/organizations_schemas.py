@@ -50,18 +50,11 @@ class Update_organization_Schema( BaseModel ):
         orm_mode = True  
 
 
-
-
-
-
-
-
-
 class Update_organization_response( BaseModel ):
     id: int = None
     updated_at: datetime
-    def formatter( company ):
+    def formatter( organization ):
         return{
-            'id': company[ 'id' ],
-            'updated_at': company[ 'updated_at' ]
+            'id': organization[ 'id' ],
+            'updated_at': organization[ 'updated_at' ]
         }

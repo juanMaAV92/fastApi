@@ -31,3 +31,18 @@ class headquarter_Controller():
         self.db.refresh( new_headquarter )
         return new_headquarter
    
+    def update_headquarter( self, id: int, headquarter ):
+        headquarter_DB = self.get_headquarter( id )
+        if not headquarter_DB:
+            return []
+        temp = headquarter.dict(exclude_none=True)
+        temp.update(headquarter.dict(include={'organization_id'}))
+        headquarter_DB.update( **temp )
+        self.db.commit()
+        self.db.refresh( headquarter_DB )
+        return True
+
+    def delete_headquarter( self, headquarter ):
+        self.db.delete( headquarter )
+        self.db.commit()
+        return

@@ -42,3 +42,23 @@ async def create_headquarter( headquarter: Create_headquarter_Schema ) -> Create
     return JSONResponse(    status_code= 200, 
                             content= jsonable_encoder( Create_headquarter_response.formatter(new_headquarter.__dict__) ))
 
+
+
+@headquartersRouter.patch( '/{id}', tags= [ 'headquarters' ],
+                    response_model= Update_headquarter_response )
+async def update_headquarter(id: int, headquarter: Update_headquarter_Schema ) -> Update_headquarter_response:
+    headquarter_DB = headquarter_Controller().update_headquarter( id, headquarter )
+    if not headquarter_DB:
+        return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
+    return JSONResponse( status_code= 200, content={ 'message' : 'Actualizado exitosamente' })
+
+
+
+@headquartersRouter.delete( '/{id}', tags= [ 'headquarters' ],
+                    response_model= dict )
+async def delete_headquarter( id: int = Path( ge=1 ) ) :
+    headquarter = headquarter_Controller().get_headquarter( id )
+    if not headquarter:
+        return JSONResponse( status_code= 404, content={ 'message' : 'No encontrado' })
+    headquarter_Controller().delete_headquarter( headquarter )
+    return JSONResponse( status_code= 200, content={ 'message' : 'Borrado exitosamente' })

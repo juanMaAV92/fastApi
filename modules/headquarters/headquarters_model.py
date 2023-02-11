@@ -4,7 +4,6 @@ from sqlalchemy import TIMESTAMP, Column, ForeignKeyConstraint, Integer, Primary
 from sqlalchemy.orm import relationship
 
 from config.database import Base
-from modules.organizations.organizations_model import Organization
 
 
 class Headquarter( Base ):
@@ -15,7 +14,6 @@ class Headquarter( Base ):
     phone = Column( String, nullable= False)
     email = Column( String, nullable= False)
     
-    organizations = relationship( Organization )
     organization_id = Column( Integer, nullable=True) 
 
     created_at = Column(TIMESTAMP(timezone=True),
@@ -23,10 +21,11 @@ class Headquarter( Base ):
     updated_at = Column(TIMESTAMP(timezone=True),
                         nullable=False, server_default=text("now()"))
 
-
+    organization = relationship("Organization", back_populates="headquarter")
+   
     __table_args__ = ( 
         PrimaryKeyConstraint( 'id' ),
-        ForeignKeyConstraint( [ 'organization_id' ],[ 'organizations.id' ]),
+        ForeignKeyConstraint( [ 'organization_id' ],[ 'organizations.id' ], ondelete='CASCADE'),
         UniqueConstraint( 'name'),
         UniqueConstraint( 'phone'),
         UniqueConstraint( 'email'),

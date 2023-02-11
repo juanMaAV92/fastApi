@@ -37,3 +37,20 @@ class Create_headquarter_response( BaseModel ):
             'id': company[ 'id' ],
             'created_at': company[ 'created_at' ]
         }
+    
+class Update_headquarter_Schema( Headquarter_Base_Schema ):
+    name: Optional[ str ] = Field( min_length=3, max_length=20 )    
+    address: Optional[ str ]
+    phone: Optional[ str ]
+    email: Optional[ str ]
+    organization_id: Optional[ int ] = None  
+
+
+class Update_headquarter_response( BaseModel ):
+    id: int = None
+    updated_at: datetime
+    def formatter( headquarter ):
+        return{
+            'id': headquarter[ 'id' ],
+            'updated_at': headquarter[ 'updated_at' ]
+        }

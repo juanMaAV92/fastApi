@@ -1,7 +1,9 @@
 
 
+from sqlalchemy.sql import text
 from config.database import SessionLocal
 
+from modules.headquarters.headquarters_model import Headquarter as Headquarters_model
 from modules.organizations.organizations_model import Organization as Organization_model
 
 class organization_Controller():
@@ -23,6 +25,13 @@ class organization_Controller():
     def get_organization( self, id ):
         organization = self.db.query( Organization_model ).filter( Organization_model.id == id ).first()
         return organization
+
+
+    def get_headquarters_by_organization( self, organization_id, limit: int, page: int  ):
+        skip = (page - 1) * limit
+        headquarters = self.db.query( Headquarters_model ).filter( Headquarters_model.organization_id == organization_id ).limit( limit ).offset( skip ).all()
+        return headquarters
+    
 
     
     def create_organization( self, organization ):

@@ -20,6 +20,7 @@ class headquarter_Controller():
     def get_headquarter( self, id ):
         headquarter = self.db.query( Headquarters_model ).filter( Headquarters_model.id == id ).first()
         return headquarter
+    
 
     def create_headquarter( self, headquarter ):
         headquarter_DB = self.db.query( Headquarters_model ).filter( Headquarters_model.email == headquarter.email ).first()

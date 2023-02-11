@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Path
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
+from modules.headquarters.headquarters_controller import headquarter_Controller
 
 from modules.organizations.organizations_schemas import *
 from modules.organizations.organizations_controller import organization_Controller
@@ -20,7 +21,6 @@ async def get_organizations( limit: int = 10, page: int = 1, search: str = '' ) 
                             content= jsonable_encoder( organizations) )
 
 
-
 @organizationRouter.get( '/{id}', tags= [ 'organization' ],
                     response_model= Get_organization_response )
 async def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_response :
@@ -30,6 +30,12 @@ async def get_organization( id: int = Path( ge=1 ) ) -> Get_organization_respons
     return JSONResponse(  status_code= 200,
                            content= jsonable_encoder( organization ) )
 
+
+@organizationRouter.get( '/{organization_id}/headquarters')
+async def get_headquarters_by_organization( organization_id: int = Path( ge=1 ), limit: int = 10, page: int = 1 ):
+    headquarters = organization_Controller().get_headquarters_by_organization( organization_id, limit, page )
+    return JSONResponse(    status_code= 200, 
+                            content= jsonable_encoder( headquarters ) )
 
 
 @organizationRouter.post( '', tags= [ 'organization' ],

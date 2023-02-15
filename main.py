@@ -6,9 +6,9 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from middlewares.error_handler import ErrorHandler
-from middlewares.error_validation import validation_exception_handler
+from handlers.error_handler import ErrorHandler, http_exception_handler, validation_exception_handler
 from modules import organizations
 from modules import headquarters
 from config.database import engine, Base
@@ -24,13 +24,14 @@ app= FastAPI(
     redoc_url= settings.REDOC_URL
 )
 
-
 app.add_middleware( ErrorHandler )
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 
 @app.get( f'{settings.URL_PREFIX}health', tags=[ 'health' ] )
 async def health():
+    # raise HTTPException(status_code=418, detail="Nope! I don't like 3.")
     return  JSONResponse( status_code= 200, content=[] )
 
 
